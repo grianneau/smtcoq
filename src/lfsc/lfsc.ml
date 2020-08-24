@@ -50,7 +50,9 @@ let process_signatures_once =
       try
         (* don := true; *)
         List.iter (fun f ->
-            let chan = open_in f in
+            let chan = try open_in f
+                       with Sys_error _ -> Structures.error "Please export the environment variable LFSCSIGS to make it point at the signatures directory distributed with SMTCoq:\nexport LFSCSIGS=\"$HOME/path/to/smtcoq/src/lfsc/tests/signatures/\" (see https://github.com/smtcoq/smtcoq/blob/master/INSTALL.md#cvc4)"
+            in
             let lexbuf = Lexing.from_channel chan in
             LfscParser.ignore_commands LfscLexer.main lexbuf;
             close_in chan
