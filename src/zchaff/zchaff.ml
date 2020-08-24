@@ -329,7 +329,8 @@ let call_zchaff nvars root =
   let exit_code = Sys.command command in
   let t1 = Sys.time () in
   Format.eprintf "Zchaff = %.5f@." (t1-.t0);
-  if exit_code <> 0 then
+  if exit_code = 127 then Structures.error "The SAT solver ZChaff should be in your PATH (see https://github.com/smtcoq/smtcoq/blob/master/INSTALL.md#zchaff)"
+  else if exit_code <> 0 then
     failwith ("Zchaff.call_zchaff: command " ^ command ^
 	        " exited with code " ^ (string_of_int exit_code));
   let logfilename = (Filename.chop_extension filename) ^ ".log" in
