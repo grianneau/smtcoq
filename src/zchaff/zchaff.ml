@@ -101,6 +101,7 @@ let rec pp_trace fmt c =
 
 
 let import_cnf filename =
+  print_string "CALL import_cnf\n" ; (* grianneau *)
   let nvars, first, last = CnfParser.parse_cnf filename in
   let reloc = Hashtbl.create 17 in
   let count = ref 0 in
@@ -255,6 +256,7 @@ let theorem_abs =
 
 
 let checker fdimacs ftrace =
+  print_string "CALL zchaff.checker\n" ; (* grianneau *)
   SmtTrace.clear ();
   let _,first,last,reloc = import_cnf fdimacs in
   let d = make_roots first last in
@@ -319,6 +321,8 @@ let export out_channel nvars first =
 (* Call zchaff *)
 
 let call_zchaff nvars root =
+  print_string "CALL call_zchaff\n" ; (* grianneau *)
+  print_string "TEST\n" ; (* grianneau *)
   let (filename, outchan) = Filename.open_temp_file "zchaff_coq" ".cnf" in
   let resfilename = (Filename.chop_extension filename)^".zlog" in
   let reloc, last = export outchan nvars root in

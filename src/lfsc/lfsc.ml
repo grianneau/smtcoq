@@ -43,6 +43,7 @@ let signatures =
 
 
 let process_signatures_once =
+  print_string "process_signatures_once CALL\n" ; (* grianneau *)
   let don = ref false in
   fun () ->
     if !don then ()
@@ -83,6 +84,7 @@ let lfsc_parse_one lb =
   
 
 let import_trace first parse lexbuf =
+  print_string "import_trace CALL\n" ; (* grianneau *)
   Printexc.record_backtrace true;
   process_signatures_once ();
   try
@@ -126,6 +128,7 @@ let import_trace first parse lexbuf =
 
 
 let import_trace_from_file first filename =
+  print_string "import_trace_from_file CALL\n" ; (* grianneau *)
   let chan = open_in filename in
   let lexbuf = Lexing.from_channel chan in
   let p = import_trace first lfsc_parse_last lexbuf in
@@ -168,6 +171,7 @@ let theorem name fsmt fproof =
 
 (* Same but print runtime *)
 let checker fsmt fproof =
+  print_string "lfsc.checker CALL\n" ; (* grianneau *)
   let c = import_all fsmt fproof in
   printf "Coq checker...@.";
   let t0 = Sys.time () in
@@ -349,6 +353,7 @@ let string_logic ro f =
 
 
 let call_cvc4 env rt ro ra rf root _ =
+  print_string "call_cvc4 CALL\n" ; (* grianneau *)
   let open Smtlib2_solver in
   let fl = snd root in
 
@@ -406,6 +411,7 @@ let call_cvc4 env rt ro ra rf root _ =
 
 
 let export out_channel rt ro l =
+  print_string "lfsc.export CALL\n" ; (* grianneau *)
   let fmt = formatter_of_out_channel out_channel in
   fprintf fmt "(set-logic %s)@." (string_logic ro l);
 
@@ -433,6 +439,7 @@ let export out_channel rt ro l =
 
 
 let get_model_from_file filename =
+  print_string "get_model_from_file CALL\n" ; (* grianneau *)
   let chan = open_in filename in
   let lexbuf = Lexing.from_channel chan in
   match SExprParser.sexps SExprLexer.main lexbuf with
@@ -441,6 +448,7 @@ let get_model_from_file filename =
 
 
 let call_cvc4_file env rt ro ra rf root =
+  print_string "call_cvc4_file CALL\n" ; (* grianneau *)
   let fl = snd root in
   let (filename, outchan) = Filename.open_temp_file "cvc4_coq" ".smt2" in
   export outchan rt ro fl;
@@ -456,6 +464,7 @@ let call_cvc4_file env rt ro ra rf root =
   (* CVC4 crashes when asking for both models and proofs *)
   
   let cvc4_cmd =
+    print_string "cvc4_cmd CALL\n" ; (* grianneau *)
     "cvc4 --proof --dump-proof \
      --no-simplification --fewer-preprocessing-holes \
      --no-bv-eq --no-bv-ineq --no-bv-algebraic "
@@ -489,6 +498,7 @@ let cvc4_logic =
 
 
 let tactic_gen vm_cast =
+  print_string "tactic_gen CALL\n" ; (* grianneau *)
   clear_all ();
   let rt = SmtBtype.create () in
   let ro = Op.create () in

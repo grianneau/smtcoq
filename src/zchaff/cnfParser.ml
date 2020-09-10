@@ -44,6 +44,7 @@ let rec parse_clauses nvars reify lb last =
   else last 
 
 let parse_cnf filename =
+  print_string "CALL parse_cnf\n" ; (* grianneau *)
   let reify = SatAtom.Form.create () in
   let lb = open_file "CNF" filename in
   let nvars = parse_p_cnf lb in

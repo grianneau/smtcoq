@@ -58,7 +58,7 @@ Ltac prop2bool :=
       [ | apply orP]
 
     | [ |- context[?G0 = true -> ?G1 = true ] ] =>
-      rewrite (@reflect_iff (G0 = true -> G1 = true) (implb G0 G1)); 
+      rewrite (@reflect_iff (G0 = true -> G1 = true) (implb G0 G1));
       [ | apply implyP]
 
     | [ |- context[?G0 = true /\ ?G1 = true ] ] =>
