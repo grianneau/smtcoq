@@ -30,6 +30,7 @@ exception No_proof
 
 (* Hard coded signatures *)
 let signatures =
+  print_string "lfsc.signatures CALL\n" ; (* grianneau *)
   let sigdir = try Sys.getenv "LFSCSIGS" with Not_found -> Sys.getcwd () in
   ["sat.plf";
    "smt.plf";
@@ -67,6 +68,7 @@ let process_signatures_once =
 
 
 let lfsc_parse_last lb =
+  print_string "lfsc_parse_last CALL\n" ; (* grianneau *)
   printf "Type-checking LFSC proof...@?";
   let t0 = Sys.time () in
   let r = LfscParser.last_command LfscLexer.main lb in
@@ -75,6 +77,7 @@ let lfsc_parse_last lb =
   r
 
 let lfsc_parse_one lb =
+  print_string "lfsc_parse_one CALL\n" ; (* grianneau *)
   printf "Type-checking LFSC proof...@?";
   let t0 = Sys.time () in
   let r = LfscParser.one_command LfscLexer.main lb in
@@ -138,6 +141,7 @@ let import_trace_from_file first filename =
 
 
 let clear_all () =
+print_string "clear_all CALL\n" ; (* grianneau *)
   SmtTrace.clear ();
   SmtMaps.clear ();
   VeritSyntax.clear ();
@@ -146,6 +150,7 @@ let clear_all () =
 
 
 let import_all fsmt fproof =
+print_string "import_all CALL\n" ; (* grianneau *)
   clear_all ();
   let rt = SmtBtype.create () in
   let ro = Op.create () in
@@ -157,13 +162,16 @@ let import_all fsmt fproof =
 
 
 let parse_certif t_i t_func t_atom t_form root used_root trace fsmt fproof =
+print_string "parse_certif CALL\n" ; (* grianneau *)
   SmtCommands.parse_certif t_i t_func t_atom t_form root used_root trace
     (import_all fsmt fproof)
 
 let checker_debug fsmt fproof =
+print_string "checker_debug CALL\n" ; (* grianneau *)
   SmtCommands.checker_debug (import_all fsmt fproof)
 
 let theorem name fsmt fproof =
+print_string "theorem CALL\n" ; (* grianneau *)
   SmtCommands.theorem name (import_all fsmt fproof)
 
 (* let checker fsmt fproof =
@@ -341,6 +349,7 @@ let checker fsmt fproof =
 (* end *)
 
 let string_logic ro f =
+  print_string "lfsc.string_logic CALL\n" ; (* grianneau *)
   let l = SL.union (Op.logic_ro ro) (Form.logic f) in
   if SL.is_empty l then "QF_SAT"
   else
@@ -350,7 +359,23 @@ let string_logic ro f =
     (if SL.mem LBitvectors l then "BV" else "")
     (if SL.mem LLia l then "LIA" else "")
 
-
+let check_cvc4_version () =
+  print_string "check_cvc4_version CALL\n" ; (* grianneau *)
+  begin
+    try (ignore (FileUtil.which "cvc4"))
+    with Not_found ->  Structures.error "cvc4 not found"
+  end ;
+  let re = Str.regexp_string "version 1.6" 
+  and chan = Unix.open_process_in "cvc4 --version" in
+  let first_line = input_line chan in
+  begin
+    (* Printf.printf "%s\n" first_line ; *)
+    begin
+      try ignore (Str.search_forward re first_line 0)
+      with Not_found -> Structures.error "Please use version 1.6 of cvc4"
+    end ;
+    ignore (Unix.close_process_in chan)
+  end
 
 let call_cvc4 env rt ro ra rf root _ =
   print_string "call_cvc4 CALL\n" ; (* grianneau *)
@@ -498,7 +523,8 @@ let cvc4_logic =
 
 
 let tactic_gen vm_cast =
-  print_string "tactic_gen CALL\n" ; (* grianneau *)
+  print_string "lfsc.tactic_gen CALL\n" ; (* grianneau *)
+  check_cvc4_version () ;
   clear_all ();
   let rt = SmtBtype.create () in
   let ro = Op.create () in
@@ -510,5 +536,7 @@ let tactic_gen vm_cast =
   (* (\* Currently, quantifiers are not handled by the cvc4 tactic: we pass
    *    the same ra and rf twice to have everything reifed *\)
    * SmtCommands.tactic call_cvc4 cvc4_logic rt ro ra rf ra rf vm_cast [] [] *)
-let tactic () = tactic_gen vm_cast_true
-let tactic_no_check () = tactic_gen (fun _ -> vm_cast_true_no_check)
+let tactic () = print_string "lfsc.tactic CALL\n" ; (* grianneau *)
+tactic_gen vm_cast_true
+let tactic_no_check () = print_string "lfsc.tactic_no_check CALL\n" ; (* grianneau *)
+tactic_gen (fun _ -> vm_cast_true_no_check)

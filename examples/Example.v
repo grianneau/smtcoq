@@ -174,6 +174,7 @@ End mult3.
 
 Goal forall a b c, ((a || b || c) && ((negb a) || (negb b) || (negb c)) && ((negb a) || b) && ((negb b) || c) && ((negb c) || a)) = false.
 Proof.
+  (* cvc4_bool. *)
   smt.
 Qed.
 
@@ -207,21 +208,19 @@ Goal forall (bv1 bv2 bv3: bitvector 4),
     bv_ultP bv1 bv2 /\ bv_ultP bv2 bv3.
 Proof.
 smt.
-(prop2bool; try verit_bool h; cvc4_bool; try verit_bool h; bool2prop).
-(prop2bool; try verit_bool h; try verit_bool h; bool2prop).
 Qed.
 
 (* All tactics have a "no_check" variant that is faster but, in case of
   failure, it will only fail at Qed *)
 
-(* Goal forall (bv1 bv2 bv3: bitvector 4), *)
-(*     bv1 = #b|0|0|0|0|  /\ *)
-(*     bv2 = #b|1|0|0|0|  /\ *)
-(*     bv3 = #b|1|1|0|0|  -> *)
-(*     bv_ultP bv1 bv2 /\ bv_ultP bv2 bv3. *)
-(* Proof. *)
-(*   smt_no_check. *)
-(* Qed. *)
+Goal forall (bv1 bv2 bv3: bitvector 4),
+    bv1 = #b|0|0|0|0|  /\
+    bv2 = #b|1|0|0|0|  /\
+    bv3 = #b|1|1|0|0|  ->
+    bv_ultP bv1 bv2 /\ bv_ultP bv2 bv3.
+Proof.
+  smt_no_check.
+Qed.
 
 (* From cvc4_bool : Uncaught exception Not_found *)
 (* Goal forall (a b c d: farray Z Z), *)
