@@ -20,7 +20,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: master
-
+      - name: recovering cached opam files...
+        uses: actions/cache@v2
+        with:
+          path: ~/.opam
+          key: ${{ runner.os }}-ocaml-${{ matrix.ocaml-version }}
       - name: setting up opam...
         uses: avsm/setup-ocaml@v1
         with:
